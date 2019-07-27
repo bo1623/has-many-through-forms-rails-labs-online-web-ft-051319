@@ -1,1 +1,24 @@
 
+<%= @post.title %><br>
+<%= @post.content %><br>
+<% @post.categories.each do |category| %>
+  <%= category.name %><br>
+<%end%>
+
+<% @post.comments.each do |comment| %>
+  <%=comment.user.username%> commented: <%=comment.content%>
+<%end%>
+
+<% @post.users.uniq.each do |user|%>
+  <%=link_to user.username, user_path(user)%>
+<%end%>
+
+
+<%= form_for @post do |f|%>
+  <%=f.collection_select :user_ids, User.all, :id, :username%><br>
+  <%# create dropdown list for users %>
+  <%=f.hidden_field :post_id, value: @post.id%>
+
+
+  <%=f.submit%>
+<%end%>
