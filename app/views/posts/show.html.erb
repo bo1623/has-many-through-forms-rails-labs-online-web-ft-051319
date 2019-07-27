@@ -6,7 +6,7 @@
 <%end%>
 
 <% @post.comments.each do |comment| %>
-  <%=comment.user.username%> commented: <%=comment.content%>
+  <%=comment.user.username%> says: <%=comment.content%>
 <%end%>
 
 <% @post.users.uniq.each do |user|%>
@@ -14,11 +14,21 @@
 <%end%>
 
 
-<%= form_for @post do |f|%>
-  <%=f.collection_select :user_ids, User.all, :id, :username%><br>
-  <%# create dropdown list for users %>
-  <%=f.hidden_field :post_id, value: @post.id%>
+<%= form_for @post.comments.build do |f| %>
+  <%= f.hidden_field :post_id %>
+  <p>
+    <%= f.collection_select :user_id, User.all, :id, :username %>
+  </p>
 
+  <%= f.fields_for :user, User.new do |user_fields| %>
+    <%= user_fields.label :username %>
+    <%= user_fields.text_field :username %>
+  <% end %>
 
-  <%=f.submit%>
-<%end%>
+  <p>
+    <%= f.label :content, "New Comment" %><br>
+    <%= f.text_area :content %>
+  </p>
+  <br/>
+  <%= f.submit %>
+<% end %>
